@@ -14,13 +14,11 @@ namespace AccountingApp
 {
     public partial class MainForm : Form
     {
-        private const string ConnectionString = "Server=localhost;Database=accountant;Trusted_Connection=True;";
-        private SqlConnection connection;
+        private int selectIndex;
 
         public MainForm()
         {
             InitializeComponent();
-            connection = new SqlConnection(ConnectionString);
             connection.Open();
         }
 
@@ -28,59 +26,50 @@ namespace AccountingApp
         {
             connection.Close();
         }
-
+        
         // загрузка списка транзакций
         public void showTransactions()
         {
-            transactions.Items.Clear();
-            var cmd =
-                new SqlCommand(
-                    "select t.transaction_id as id, t.date, t.price, c.name as category, t.comments from transactions t join category c on c.category_id = t.category_id",
-                    connection);
-            using (var reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    var item = new ListViewItem(new[]
-                    {
-                        Convert.ToString(reader["id"]),
-                        Convert.ToString(reader["date"]),
-                        Convert.ToString(reader["category"]),
-                        Convert.ToString(reader["price"]),
-                        Convert.ToString(reader["comments"])
-                    });
-                    transactions.Items.Add(item);
-                }
-            }
-        }
+            DataTable dt = new DataTable();
+            dataAdapter.Fill(dt);
+            transactions.DataSource = dt;
+            selectIndex = transactions.Rows.Count == 0 ? -1 : 0;
 
+            transactions.Columns[0].HeaderText = "ID";
+            transactions.Columns[1].HeaderText = "Date";
+            transactions.Columns[2].HeaderText = "Price";
+            transactions.Columns[3].Visible = false;
+            transactions.Columns[4].HeaderText = "Category";
+            transactions.Columns[5].HeaderText = "Comments";
+        }
+        
         private void MainForm_Activated(object sender, EventArgs e)
         {
             showTransactions();
         }
-
+        
         // удаление транзакций
         private void deleteTransaction_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem item in transactions.SelectedItems)
+            if (selectIndex >= 0)
             {
                 var cmd =
                     new SqlCommand(
                         "delete from transactions where transaction_id = @id",
                         connection);
-                cmd.Parameters.Add("id", int.Parse(item.SubItems[0].Text));
+                cmd.Parameters.AddWithValue("id", int.Parse(transactions.Rows[selectIndex].Cells[0].Value.ToString()));
                 cmd.ExecuteNonQuery();
             }
-
+        
             showTransactions();
         }
-
+        
         // редактирование платежа
         private void editTransaction_Click(object sender, EventArgs e)
         {
-            if (transactions.SelectedItems.Count == 1)
+            if (selectIndex >= 0)
             {
-                var id = int.Parse(transactions.SelectedItems[0].SubItems[0].Text);
+                var id = int.Parse(transactions.Rows[selectIndex].Cells[0].Value.ToString());
                 var form = new TransactionForm(connection, id);
                 form.Show();
             }
@@ -91,6 +80,11 @@ namespace AccountingApp
         {
             var form = new TransactionForm(connection);
             form.Show();
+        }
+
+        private void transactions_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            selectIndex = e.RowIndex;
         }
     }
 }

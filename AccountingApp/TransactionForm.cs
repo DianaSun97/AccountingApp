@@ -28,7 +28,7 @@ namespace AccountingApp
                 new SqlCommand(
                     "select transaction_id, date, price, category_id, comments from transactions where transaction_id = @id",
                     connection);
-            cmd.Parameters.Add("id", id);
+            cmd.Parameters.AddWithValue("id", id);
             using (var reader = cmd.ExecuteReader())
             {
                 if (reader.Read())

@@ -1,4 +1,6 @@
-﻿namespace AccountingApp
+﻿using System.Windows.Forms;
+
+namespace AccountingApp
 {
     partial class MainForm
     {
@@ -30,14 +32,13 @@
         private void InitializeComponent()
         {
             this.addTransactions = new System.Windows.Forms.Button();
-            this.transactions = new System.Windows.Forms.ListView();
-            this.colID = new System.Windows.Forms.ColumnHeader();
-            this.colDate = new System.Windows.Forms.ColumnHeader();
-            this.colCategory = new System.Windows.Forms.ColumnHeader();
-            this.colPrice = new System.Windows.Forms.ColumnHeader();
-            this.colCommets = new System.Windows.Forms.ColumnHeader();
             this.deleteTransaction = new System.Windows.Forms.Button();
             this.editTransaction = new System.Windows.Forms.Button();
+            this.transactions = new System.Windows.Forms.DataGridView();
+            this.sqlCommand1 = new System.Data.SqlClient.SqlCommand();
+            this.connection = new System.Data.SqlClient.SqlConnection();
+            this.dataAdapter = new System.Data.SqlClient.SqlDataAdapter();
+            ((System.ComponentModel.ISupportInitialize)(this.transactions)).BeginInit();
             this.SuspendLayout();
             // 
             // addTransactions
@@ -50,44 +51,6 @@
             this.addTransactions.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
             this.addTransactions.UseVisualStyleBackColor = true;
             this.addTransactions.Click += new System.EventHandler(this.addTransactions_Click);
-            // 
-            // transactions
-            // 
-            this.transactions.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.transactions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {this.colID, this.colDate, this.colCategory, this.colPrice, this.colCommets});
-            this.transactions.Dock = System.Windows.Forms.DockStyle.Left;
-            this.transactions.FullRowSelect = true;
-            this.transactions.Location = new System.Drawing.Point(0, 0);
-            this.transactions.Name = "transactions";
-            this.transactions.Size = new System.Drawing.Size(602, 450);
-            this.transactions.TabIndex = 1;
-            this.transactions.UseCompatibleStateImageBehavior = false;
-            this.transactions.View = System.Windows.Forms.View.Details;
-            // 
-            // colID
-            // 
-            this.colID.Text = "ID";
-            this.colID.Width = 48;
-            // 
-            // colDate
-            // 
-            this.colDate.Text = "Date";
-            this.colDate.Width = 100;
-            // 
-            // colCategory
-            // 
-            this.colCategory.Text = "Category";
-            this.colCategory.Width = 120;
-            // 
-            // colPrice
-            // 
-            this.colPrice.Text = "Price";
-            this.colPrice.Width = 64;
-            // 
-            // colCommets
-            // 
-            this.colCommets.Text = "Comments";
-            this.colCommets.Width = 200;
             // 
             // deleteTransaction
             // 
@@ -111,34 +74,59 @@
             this.editTransaction.UseVisualStyleBackColor = true;
             this.editTransaction.Click += new System.EventHandler(this.editTransaction_Click);
             // 
+            // transactions
+            // 
+            this.transactions.AllowUserToAddRows = false;
+            this.transactions.AllowUserToDeleteRows = false;
+            this.transactions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.transactions.Location = new System.Drawing.Point(14, 14);
+            this.transactions.Name = "transactions";
+            this.transactions.ReadOnly = true;
+            this.transactions.Size = new System.Drawing.Size(586, 307);
+            this.transactions.TabIndex = 4;
+            this.transactions.CellClick += new DataGridViewCellEventHandler(this.transactions_CellContentClick);
+            // 
+            // sqlCommand1
+            // 
+            this.sqlCommand1.CommandText = "select t.transaction_id, t.date, t.price, t.category_id, c.name, t.comments from transactions t join category c on c.category_id = t.category_id";
+            this.sqlCommand1.Connection = this.connection;
+            // 
+            // connection
+            // 
+            this.connection.ConnectionString = "Server=localhost;Database=accountant;Trusted_Connection=True;";
+            this.connection.FireInfoMessageEventOnUserErrors = false;
+            // 
+            // dataAdapter
+            // 
+            this.dataAdapter.SelectCommand = this.sqlCommand1;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (32)))), ((int) (((byte) (43)))), ((int) (((byte) (54)))));
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(43)))), ((int)(((byte)(54)))));
+            this.ClientSize = new System.Drawing.Size(783, 333);
+            this.Controls.Add(this.transactions);
             this.Controls.Add(this.editTransaction);
             this.Controls.Add(this.deleteTransaction);
-            this.Controls.Add(this.transactions);
             this.Controls.Add(this.addTransactions);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Activated += new System.EventHandler(this.MainForm_Activated);
+            ((System.ComponentModel.ISupportInitialize)(this.transactions)).EndInit();
             this.ResumeLayout(false);
         }
+
+        private System.Data.SqlClient.SqlDataAdapter dataAdapter;
+
+        private System.Data.SqlClient.SqlCommand sqlCommand1;
+        private System.Data.SqlClient.SqlConnection connection;
+
+        private System.Windows.Forms.DataGridView transactions;
 
         private System.Windows.Forms.Button editTransaction;
 
         private System.Windows.Forms.Button deleteTransaction;
-
-        private System.Windows.Forms.ColumnHeader colCommets;
-
-        private System.Windows.Forms.ColumnHeader colID;
-        private System.Windows.Forms.ColumnHeader colDate;
-        private System.Windows.Forms.ColumnHeader colCategory;
-        private System.Windows.Forms.ColumnHeader colPrice;
-
-        private System.Windows.Forms.ListView transactions;
 
         private System.Windows.Forms.Button addTransactions;
 
