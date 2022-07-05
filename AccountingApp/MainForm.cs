@@ -86,5 +86,11 @@ namespace AccountingApp
         {
             selectIndex = e.RowIndex;
         }
+
+        private void buttonSummary_Click(object sender, EventArgs e)
+        {
+            var form = new SummaryForm(connection);
+            form.Show();
+        }
     }
 }

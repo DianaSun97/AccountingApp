@@ -38,6 +38,7 @@ namespace AccountingApp
             this.sqlCommand1 = new System.Data.SqlClient.SqlCommand();
             this.connection = new System.Data.SqlClient.SqlConnection();
             this.dataAdapter = new System.Data.SqlClient.SqlDataAdapter();
+            this.buttonSummary = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.transactions)).BeginInit();
             this.SuspendLayout();
             // 
@@ -84,11 +85,11 @@ namespace AccountingApp
             this.transactions.ReadOnly = true;
             this.transactions.Size = new System.Drawing.Size(586, 307);
             this.transactions.TabIndex = 4;
-            this.transactions.CellClick += new DataGridViewCellEventHandler(this.transactions_CellContentClick);
+            this.transactions.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.transactions_CellContentClick);
             // 
             // sqlCommand1
             // 
-            this.sqlCommand1.CommandText = "select t.transaction_id, t.date, t.price, t.category_id, c.name, t.comments from transactions t join category c on c.category_id = t.category_id";
+            this.sqlCommand1.CommandText = "select t.transaction_id, t.date, t.price, t.category_id, c.name, t.comments from " + "transactions t join category c on c.category_id = t.category_id";
             this.sqlCommand1.Connection = this.connection;
             // 
             // connection
@@ -100,12 +101,24 @@ namespace AccountingApp
             // 
             this.dataAdapter.SelectCommand = this.sqlCommand1;
             // 
+            // buttonSummary
+            // 
+            this.buttonSummary.Location = new System.Drawing.Point(623, 227);
+            this.buttonSummary.Name = "buttonSummary";
+            this.buttonSummary.Size = new System.Drawing.Size(138, 51);
+            this.buttonSummary.TabIndex = 5;
+            this.buttonSummary.Text = "Summary";
+            this.buttonSummary.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.buttonSummary.UseVisualStyleBackColor = true;
+            this.buttonSummary.Click += new System.EventHandler(this.buttonSummary_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(43)))), ((int)(((byte)(54)))));
             this.ClientSize = new System.Drawing.Size(783, 333);
+            this.Controls.Add(this.buttonSummary);
             this.Controls.Add(this.transactions);
             this.Controls.Add(this.editTransaction);
             this.Controls.Add(this.deleteTransaction);
@@ -116,6 +129,8 @@ namespace AccountingApp
             ((System.ComponentModel.ISupportInitialize)(this.transactions)).EndInit();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.Button buttonSummary;
 
         private System.Data.SqlClient.SqlDataAdapter dataAdapter;
 
